@@ -43,53 +43,94 @@ class _MyAppState extends State<MyApp> {
         return MaterialApp(
           title: 'luxOT',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.indigo,
-              brightness: Brightness.light,
-            ),
             useMaterial3: true,
-            scaffoldBackgroundColor: const Color(0xFFF6F7FB),
-            appBarTheme: const AppBarTheme(elevation: 0, centerTitle: true),
+            brightness: Brightness.dark,
+            colorScheme: const ColorScheme.dark(
+              primary: Color(0xFFF5C542),
+              secondary: Color(0xFFF5C542),
+              surface: Color(0xFF111A2E),
+              surfaceContainerHighest: Color(0xFF151F36),
+              onSurface: Color(0xFFE9EDF7),
+              onSurfaceVariant: Color(0xFFB9C2D3),
+              error: Color(0xFFFF4D4D),
+            ),
+            scaffoldBackgroundColor: const Color(0xFF0B1020),
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              centerTitle: true,
+              scrolledUnderElevation: 0,
+            ),
             cardTheme: const CardThemeData(
-              elevation: 3,
-              shadowColor: Color(0x1A000000),
+              elevation: 0,
+              margin: EdgeInsets.zero,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(18)),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
             ),
-            chipTheme: ChipThemeData(
-              backgroundColor: Colors.white,
-              selectedColor: Colors.indigo.shade100,
-              labelStyle: const TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF1F2937),
+            navigationBarTheme: NavigationBarThemeData(
+              backgroundColor: const Color(0xFF0B1020),
+              indicatorColor: const Color(0xFFF5C542).withOpacity(0.16),
+              labelTextStyle: WidgetStateProperty.all(
+                const TextStyle(fontWeight: FontWeight.w700),
               ),
-              secondaryLabelStyle: const TextStyle(
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF4338CA),
+            ),
+            filledButtonTheme: FilledButtonThemeData(
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFFF5C542),
+                foregroundColor: const Color(0xFF0B1020),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 14,
+                  horizontal: 18,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
+            ),
+            outlinedButtonTheme: OutlinedButtonThemeData(
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Color(0xFF2A3553)),
+                foregroundColor: const Color(0xFFE9EDF7),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 14,
+                  horizontal: 18,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
             ),
             inputDecorationTheme: InputDecorationTheme(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xFF2A3553)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xFF2A3553)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(
+                  color: Color(0xFFF5C542),
+                  width: 2,
+                ),
               ),
               filled: true,
-              fillColor: Colors.white,
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                  horizontal: 32,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                elevation: 0,
-              ),
+              fillColor: const Color(0xFF111A2E),
+              labelStyle: const TextStyle(color: Color(0xFFB9C2D3)),
             ),
           ),
           home: ready
@@ -113,6 +154,82 @@ class _SplashPage extends StatelessWidget {
           width: 28,
           child: CircularProgressIndicator(strokeWidth: 2.5),
         ),
+      ),
+    );
+  }
+}
+
+/// Reusable StatusPill widget for compact status indicators
+class StatusPill extends StatelessWidget {
+  final String text;
+  final IconData? icon;
+  final Color? backgroundColor;
+  final Color? textColor;
+
+  const StatusPill({
+    super.key,
+    required this.text,
+    this.icon,
+    this.backgroundColor,
+    this.textColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color:
+            backgroundColor ??
+            Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(
+              icon,
+              size: 14,
+              color:
+                  textColor ?? Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color:
+                  textColor ?? Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Reusable LuxCard wrapper for consistent card styling
+class LuxCard extends StatelessWidget {
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+  final VoidCallback? onTap;
+
+  const LuxCard({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.all(16),
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(padding: padding, child: child),
       ),
     );
   }
@@ -956,45 +1073,35 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final connected = mqtt.connected.value;
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        title: ShaderMask(
-          shaderCallback: (bounds) => const LinearGradient(
-            colors: [Color(0xFFFFD700), Color(0xFFD4AF37)],
-          ).createShader(bounds),
-          child: const Text(
-            'luxOT',
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 24,
-              color: Colors.white,
-              letterSpacing: -0.5,
-            ),
-          ),
-        ),
-        elevation: 0,
-        backgroundColor: const Color(0xFF1a1a1a),
-        scrolledUnderElevation: 0,
-        shadowColor: const Color(0xFFD4AF37).withOpacity(0.3),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.transparent,
-                  const Color(0xFFD4AF37).withOpacity(0.3),
-                  Colors.transparent,
-                ],
-              ),
-            ),
+        title: Text(
+          'luxOT',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            fontSize: 24,
+            color: Theme.of(context).colorScheme.primary,
+            letterSpacing: -0.5,
           ),
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Center(
+              child: StatusPill(
+                text: connected ? 'Online' : 'Offline',
+                icon: connected ? Icons.cloud_done : Icons.cloud_off,
+                backgroundColor: connected
+                    ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                    : Theme.of(context).colorScheme.error.withOpacity(0.1),
+                textColor: connected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ),
           if (!connected)
-            Container(
-              margin: const EdgeInsets.only(right: 8),
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
               child: IconButton(
                 icon: _isReconnecting
                     ? const SizedBox(
@@ -1016,50 +1123,6 @@ class _HomePageState extends State<HomePage> {
                 onPressed: _isReconnecting ? null : _reconnect,
               ),
             ),
-          Container(
-            margin: const EdgeInsets.only(right: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: connected
-                    ? [const Color(0xFF51CF66), const Color(0xFF37B24D)]
-                    : [const Color(0xFFFF6B6B), const Color(0xFFFA5252)],
-              ),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color:
-                      (connected
-                              ? const Color(0xFF51CF66)
-                              : const Color(0xFFFF6B6B))
-                          .withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  connected
-                      ? Icons.cloud_done_rounded
-                      : Icons.cloud_off_rounded,
-                  color: Colors.white,
-                  size: 16,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  connected ? 'Online' : 'Offline',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
           IconButton(
             icon: const Icon(Icons.logout_rounded),
             onPressed: _logout,
@@ -1219,47 +1282,18 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   );
                                 },
-                                borderRadius: BorderRadius.circular(24),
-                                child: Ink(
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFF2a2a2a),
-                                        Color(0xFF1a1a1a),
-                                        Color(0xFF121212),
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      stops: [0.0, 0.5, 1.0],
-                                    ),
-                                    border: Border.all(
-                                      color: const Color(0xFFD4AF37),
-                                      width: 1.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(24),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(
-                                          0xFFD4AF37,
-                                        ).withOpacity(0.4),
-                                        blurRadius: 16,
-                                        offset: const Offset(0, 8),
-                                        spreadRadius: 0,
-                                      ),
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.6),
-                                        blurRadius: 24,
-                                        offset: const Offset(0, 12),
-                                        spreadRadius: -8,
-                                      ),
-                                    ],
-                                  ),
+                                borderRadius: BorderRadius.circular(20),
+                                child: Card(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainerHighest,
                                   child: Padding(
-                                    padding: const EdgeInsets.all(14),
+                                    padding: const EdgeInsets.all(16),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
+                                        // Top row: Room name + Status
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -1267,167 +1301,64 @@ class _HomePageState extends State<HomePage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    roomName,
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      fontSize: 18,
+                                              child: Text(
+                                                roomName,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge
+                                                    ?.copyWith(
                                                       fontWeight:
                                                           FontWeight.w800,
-                                                      color: Colors.white,
-                                                      letterSpacing: -0.5,
                                                     ),
-                                                  ),
-                                                  const SizedBox(height: 4),
-                                                  Container(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal: 8,
-                                                          vertical: 3,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white
-                                                          .withOpacity(0.25),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8,
-                                                          ),
-                                                    ),
-                                                    child: Text(
-                                                      '${roomLights.length} device${roomLights.length != 1 ? 's' : ''}',
-                                                      style: const TextStyle(
-                                                        fontSize: 10,
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Container(
-                                              padding: const EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white.withOpacity(
-                                                  0.25,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(14),
-                                              ),
-                                              child: const Icon(
-                                                Icons.meeting_room_rounded,
-                                                color: Colors.white,
-                                                size: 22,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 16),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 6,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: allOn
-                                                ? const Color(
-                                                    0xFFD4AF37,
-                                                  ).withOpacity(0.3)
-                                                : Colors.white.withOpacity(0.2),
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                allOn
-                                                    ? Icons.lightbulb_rounded
-                                                    : Icons
-                                                          .lightbulb_outline_rounded,
-                                                size: 14,
-                                                color: Colors.white,
+                                        const SizedBox(height: 8),
+                                        // Device count
+                                        Text(
+                                          '${roomLights.length} device${roomLights.length != 1 ? 's' : ''}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurfaceVariant,
                                               ),
-                                              const SizedBox(width: 6),
-                                              Text(
-                                                allOn ? 'All On' : 'Some Off',
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
                                         ),
-                                        const SizedBox(height: 12),
-                                        SizedBox(
-                                          height: 32,
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons
-                                                    .power_settings_new_rounded,
-                                                size: 16,
-                                                color: allOn
-                                                    ? const Color(0xFFFFD700)
-                                                    : Colors.white.withOpacity(
-                                                        0.4,
-                                                      ),
-                                              ),
-                                              const SizedBox(width: 6),
-                                              Flexible(
-                                                child: Text(
-                                                  'Toggle All',
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.white
-                                                        .withOpacity(0.9),
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Transform.scale(
-                                                scale: 0.75,
-                                                child: Switch(
-                                                  value: allOn,
-                                                  onChanged:
-                                                      roomLights.isEmpty ||
-                                                          !connected
-                                                      ? null
-                                                      : (value) {
-                                                          _toggleAllInRoom(
-                                                            roomName,
-                                                            value,
-                                                          );
-                                                        },
-                                                  activeThumbColor: const Color(
-                                                    0xFFFFD700,
-                                                  ),
-                                                  activeTrackColor: const Color(
-                                                    0xFFD4AF37,
-                                                  ).withOpacity(0.5),
-                                                  inactiveThumbColor: Colors
-                                                      .white
-                                                      .withOpacity(0.4),
-                                                  inactiveTrackColor: Colors
-                                                      .white
-                                                      .withOpacity(0.2),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                        const Spacer(),
+                                        // Bottom: Master label + Toggle
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              roomName,
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.labelMedium,
+                                            ),
+                                            Switch(
+                                              value: allOn,
+                                              onChanged: connected
+                                                  ? (value) {
+                                                      for (final light
+                                                          in roomLights) {
+                                                        _toggleLight(
+                                                          int.parse(
+                                                                light['id'],
+                                                              ) -
+                                                              1,
+                                                          value,
+                                                        );
+                                                      }
+                                                    }
+                                                  : null,
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -1657,23 +1588,23 @@ class _HomePageState extends State<HomePage> {
         );
       },
       child: Card(
-        color: const Color(0xFF1a1a1a),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: Color(0xFF333333)),
-        ),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         child: ListTile(
-          leading: Icon(icon, color: iconColor ?? const Color(0xFFD4AF37)),
+          leading: Icon(
+            icon,
+            color: iconColor ?? Theme.of(context).colorScheme.primary,
+          ),
           title: Text(
             title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
           subtitle: Text(
             subtitle,
-            style: const TextStyle(color: Color(0xFF999999)),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       ),
@@ -1732,140 +1663,55 @@ class _RoomDetailPageState extends State<_RoomDetailPage> {
           ).createShader(bounds),
           child: Text(
             widget.roomName,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w700,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         ),
-        elevation: 0,
-        backgroundColor: const Color(0xFF1a1a1a),
-        scrolledUnderElevation: 0,
-        shadowColor: const Color(0xFFD4AF37).withOpacity(0.3),
-        iconTheme: const IconThemeData(color: Color(0xFFD4AF37)),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.transparent,
-                  const Color(0xFFD4AF37).withOpacity(0.3),
-                  Colors.transparent,
-                ],
-              ),
-            ),
-          ),
-        ),
+        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF1a1a1a), Color(0xFF121212), Color(0xFF0a0a0a)],
-            stops: [0.0, 0.5, 1.0],
-          ),
+      body: ListView.builder(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
         ),
-        child: ListView.builder(
-          physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
-          ),
-          padding: const EdgeInsets.all(16),
-          itemCount: _roomLights.length,
-          itemBuilder: (context, i) {
-            final light = _roomLights[i];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Card(
-                elevation: 4,
-                color: Colors.transparent,
-                shadowColor: light['on']
-                    ? const Color(0xFFFFD700).withOpacity(0.3)
-                    : Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
-                  side: BorderSide(
-                    color: light['on']
-                        ? const Color(0xFFD4AF37)
-                        : const Color(0xFF333333),
-                    width: 1.5,
+        padding: const EdgeInsets.all(16),
+        itemCount: _roomLights.length,
+        itemBuilder: (context, i) {
+          final light = _roomLights[i];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Card(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: ListTile(
+                title: Text(
+                  light['name'],
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                subtitle: Text(
+                  light['room'],
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
-                    gradient: LinearGradient(
-                      colors: light['on']
-                          ? [const Color(0xFF2a2a2a), const Color(0xFF1a1a1a)]
-                          : [const Color(0xFF1a1a1a), const Color(0xFF121212)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: light['on']
-                        ? [
-                            BoxShadow(
-                              color: const Color(0xFFFFD700).withOpacity(0.2),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ]
-                        : null,
-                  ),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 220),
-                    curve: Curves.easeOutCubic,
-                    child: SwitchListTile(
-                      title: Text(
-                        light['name'],
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                      subtitle: Text(
-                        light['room'],
-                        style: const TextStyle(color: Color(0xFF999999)),
-                      ),
-                      value: light['on'],
-                      onChanged: widget.connected
-                          ? (v) => _toggleLight(i, v)
-                          : null,
-                      secondary: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: light['on']
-                              ? const Color(0xFFD4AF37).withOpacity(0.3)
-                              : const Color(0xFF333333).withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          light['on']
-                              ? Icons.lightbulb
-                              : Icons.lightbulb_outline,
-                          color: light['on']
-                              ? const Color(0xFFFFD700)
-                              : const Color(0xFF666666),
-                          size: 24,
-                        ),
-                      ),
-                      activeThumbColor: const Color(0xFFFFD700),
-                      activeTrackColor: const Color(
-                        0xFFD4AF37,
-                      ).withOpacity(0.5),
-                      inactiveThumbColor: const Color(0xFF666666),
-                      inactiveTrackColor: const Color(
-                        0xFF333333,
-                      ).withOpacity(0.5),
-                    ),
-                  ),
+                leading: Icon(
+                  light['on'] ? Icons.lightbulb : Icons.lightbulb_outline,
+                  color: light['on']
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                trailing: Switch(
+                  value: light['on'],
+                  onChanged: widget.connected
+                      ? (v) => _toggleLight(i, v)
+                      : null,
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
